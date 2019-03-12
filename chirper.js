@@ -18,6 +18,13 @@ app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine', 'ejs')
 
+app.get('/', (_, response) => {
+    connection.query('SELECT * FROM chirps;', (error, results) => {
+        if (error) throw error
+
+        response.render('index', { 'chirps' : results })
+    })
+})
 app.post('/', (request, response) => {
     const content = request.body.content
     connection.query(`INSERT INTO chirps SET ?;`, { 'content': content }, (error) => {
