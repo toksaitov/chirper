@@ -6,7 +6,7 @@ const app = express()
 const Sequelize = require('sequelize');
 require('dotenv').config()
 
-// Подключаемся и натраиваем структуру базы данных через ORM систему
+// Подключаемся и наcтраиваем структуру базы данных через ORM систему
 
 const sequelize = new Sequelize({
     'host'     : process.env.CHIRPER_DB_HOST,
@@ -17,17 +17,17 @@ const sequelize = new Sequelize({
     'dialect'  : 'mysql'
 });
 
-// const User = sequelize.define('user', {
-//     'login' : {
-//         'type' : Sequelize.STRING,
-//         'allowNull' : false,
-//         'unique' : true
-//     },
-//     'password' : {
-//         'type' : Sequelize.STRING,
-//         'allowNull' : false
-//     }
-// });
+const User = sequelize.define('user', {
+    'login' : {
+        'type' : Sequelize.STRING,
+        'allowNull' : false,
+        'unique' : true
+    },
+    'password' : {
+        'type' : Sequelize.STRING,
+        'allowNull' : false
+    }
+});
 const Chirp = sequelize.define('chirp', {
     'content' : {
         'type' : Sequelize.STRING,
@@ -35,8 +35,8 @@ const Chirp = sequelize.define('chirp', {
     }
 });
 
-// User.hasMany(Chirp)
-// Chirp.belongsTo(User)
+User.hasMany(Chirp)
+Chirp.belongsTo(User)
 
 // ---
 
@@ -76,10 +76,10 @@ app.post('/', (request, response) => {
 
 sequelize.sync().then(() => {
     // Создаем тестового пользователя (пока нет регистрации)
-    // return User.create({
-    //     'login': 'user',
-    //     'password': process.env.CHIRPER_TEST_USER_PASS
-    // })
+    return User.create({
+        'login': 'user',
+        'password': process.env.CHIRPER_TEST_USER_PASS
+    })
 }).then(() => {
     const port = process.env.CHIRPER_PORT
     app.listen(port, () => console.log(`The Chirper server is listening on port ${port}.`))
