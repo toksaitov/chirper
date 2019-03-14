@@ -70,6 +70,10 @@ app.post('/', (request, response) => {
     })
 })
 
+app.get('/login', (request, response) => {
+    response.render('login')
+})
+
 // ---
 
 // Создаем структуру базы при помощи ORM и запускаем веб-сервер
