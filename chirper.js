@@ -21,8 +21,7 @@ const sequelize = new Sequelize({
 const User = sequelize.define('user', {
     'login' : {
         'type' : Sequelize.STRING,
-        'allowNull' : false,
-        'unique' : true
+        'allowNull' : false
     },
     'password' : {
         'type' : Sequelize.STRING,
