@@ -5,7 +5,6 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const app = express()
 const Sequelize = require('sequelize')
-const bcrypt = require('bcrypt')
 require('dotenv').config()
 
 // Подключаемся и наcтраиваем структуру базы данных через ORM систему
@@ -59,7 +58,15 @@ app.set('view engine', 'ejs')
 // Задаем обработчики путей (роутинг) веб-сервера
 
 app.get('/', (request, response) => {
-
+    Chirp.findAll().then(chirps => {
+        response.render('index', {
+            'chirps' : chirps,
+            'session' : request.session
+        })
+    }).catch(error => {
+        console.error(error)
+        response.status(500).end('Internal Server Error')
+    })
 })
 
 app.post('/', (request, response) => {
@@ -88,7 +95,7 @@ app.post('/login', (request, response) => {
     const password = request.body.password
 
     User.findOne({ 'where' : { 'login' : login } }).then(user => {
-        if (bcrypt.compareSync(passwordy, user.password)) {
+        if (user.password == password) {
             request.session.authorized = true
             request.session.login = login
             request.session.userID = user.id
@@ -121,7 +128,7 @@ sequelize.sync().then(() => {
     // Создаем тестового пользователя (пока нет регистрации)
     return User.create({
         'login': 'user',
-        'password': bcrypt.hashSync(process.env.CHIRPER_TEST_USER_PASS, 10)
+        'password': process.env.CHIRPER_TEST_USER_PASS
     })
 }).then(() => {
     const port = process.env.CHIRPER_PORT
