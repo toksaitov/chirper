@@ -22,10 +22,12 @@
                 <li><%= chirps[i].content %></li>
             <% } %>
         </ul>
-        <form action="/" method="POST">
-            <textarea name="content" rows="2" cols="20"></textarea><br>
-            <input type="submit" value="Chirp">
-        </form>
+        <% if (session.authorized) { %>
+            <form action="/" method="POST">
+                <textarea name="content" rows="2" cols="20"></textarea><br>
+                <input type="submit" value="Chirp">
+            </form>
+        <% } %>
         <footer>
             <p>&copy; 2018</p>
         </footer>
