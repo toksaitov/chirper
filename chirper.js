@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const app = express()
 const Sequelize = require('sequelize')
+const bcrypt = require('bcrypt')
 require('dotenv').config()
 
 // Подключаемся и наcтраиваем структуру базы данных через ORM систему
@@ -21,7 +22,8 @@ const sequelize = new Sequelize({
 const User = sequelize.define('user', {
     'login' : {
         'type' : Sequelize.STRING,
-        'allowNull' : false
+        'allowNull' : false,
+        'unique' : true
     },
     'password' : {
         'type' : Sequelize.STRING,
@@ -94,7 +96,7 @@ app.post('/login', (request, response) => {
     const password = request.body.password
 
     User.findOne({ 'where' : { 'login' : login } }).then(user => {
-        if (user.password == password) {
+        if (bcrypt.compareSync(password, user.password)) {
             request.session.authorized = true
             request.session.login = login
             request.session.userID = user.id
@@ -119,17 +121,15 @@ app.get('/logout', (request, response) => {
     })
 })
 
+app.get('/register', (request, response) => {
+    response.render('register', { 'session' : request.session })
+})
+
 // ---
 
 // Создаем структуру базы при помощи ORM и запускаем веб-сервер
 
 sequelize.sync().then(() => {
-    // Создаем тестового пользователя (пока нет регистрации)
-    return User.create({
-        'login': 'user',
-        'password': process.env.CHIRPER_TEST_USER_PASS
-    })
-}).then(() => {
     const port = process.env.CHIRPER_PORT
     app.listen(port, () => console.log(`The Chirper server is listening on port ${port}.`))
 });
