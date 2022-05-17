@@ -1,0 +1,25 @@
+version: "2"
+
+services:
+    chirper:
+        build: "."
+        image: "toksaitov/chirper"
+        ports:
+            - "8080:8080"
+        env_file: ".env.testing"
+        depends_on:
+            - "chirper-db-test"
+            - "chirper-session-db-test"
+
+    chirper-db-test:
+        image: "mysql/mysql-server:8.0.29"
+        command: "--character-set-server=utf8 --collation-server=utf8_general_ci"
+        environment:
+            MYSQL_ROOT_PASSWORD: "${DB_PASS}"
+            MYSQL_DATABASE: "${DB_NAME}"
+            MYSQL_USER: "${DB_USER}"
+            MYSQL_PASSWORD: "${DB_PASS}"
+
+    chirper-session-db-test:
+        image: "redis:7.0.0"
+

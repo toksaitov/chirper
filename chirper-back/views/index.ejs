@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('partials/utilities/head', { 'title': 'Chirper' }) %>
+    </head>
+    <body>
+        <%- include('partials/header', { 'showUserToolbar': true }) %>
+        <main class="container">
+            <%- include('partials/error') %>
+            <%- include('partials/messageForm') %>
+            <%- include('partials/messages') %>
+        </main>
+        <%- include('partials/footer') %>
+    </body>
+</html>

@@ -1,0 +1,5 @@
+<% for (const message of messages) { %>
+    <div class="row my-3">
+        <%- include('message', { 'message': message }) %>
+    </div>
+<% } %>
